@@ -16,7 +16,7 @@ const ddd = [
 ];
 
 const ColumnList = props => {
-	const { columns, onColOrderChange } = props;
+	const { columns, onColOrderChange, text } = props;
 
 	const [data, setData] = useState();
 	const [cols, setCols] = useState([]);
@@ -74,13 +74,13 @@ const ColumnList = props => {
 	return (
 		<Popover
 			placement="bottomRight"
-			title={"Sütunlar"}
+			title={text || "Columns"}
 			content={content}
 			trigger="click"
 			visible={open}
 			onVisibleChange={(value) => setOpen(value)}
 		>
-			<Btn icon={<OrderedListOutlined />} />
+			<Btn icon={<OrderedListOutlined />} >{text || "Columns"}</Btn>
 		</Popover>
 	);
 

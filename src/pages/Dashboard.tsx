@@ -118,6 +118,7 @@ const Dashboard: React.FC = () => {
               //   }
               // ]}
               // multiselectCloseText={"Iptal"}
+              onCreate={() => { }}
               baseUrl={"https://dashboard.gowit-test.com/api"}
               listUrl={"/accounts/1/tables/campaigns"}
             />

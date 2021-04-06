@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Helper } from "../../helpers/helperFunction";
-import { ColNames } from "../../enum/ColNames";
-import { InvoiceStatus } from "../../enum/InvoiceStatus";
 import { DownloadOutlined, CloseOutlined } from "@ant-design/icons";
 import { Input, Table, Space, Row, Button, Col, Tag, message, Popover } from "antd";
+import { FilterOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import FilterSection from "./FilterSection";
 import ColumnList from "./ColumnList/ColumnList";
@@ -96,6 +94,23 @@ interface DataGridProps {
    * Search box icerisinde yazacak olan placeholder
    */
   searchPlaceholder?: string
+  /**
+   * Create button uzerinde yazacak olan text
+   */
+  createButtonText?: string
+  /**
+   * Create buttonuna tiklandiginda tetiklenecek olan event handler. 
+   * ONEMLI: Create butonunun gorunebilir olmasi icin, bu handler set edilmelidir.
+   */
+  onCreate?: Function,
+  /**
+   * Filters yerine gececek text parametresi
+   */
+  filtersText?: string
+  /**
+   * Columns yerine gececek text parametresi
+   */
+  columnsText?: string
 }
 
 const SearchSection = styled(Row)`
@@ -103,20 +118,22 @@ const SearchSection = styled(Row)`
 `;
 const RowSection = styled(Row)`
   background: white;
-  padding: 1%;
+  padding-top: 10px;
+  padding-bottom: 13px;
+  height: 51px;
 `;
-const IconSection = styled(Col)`
+const RightSection = styled(Col)`
   display: flex;
   justify-content: flex-end;
 `;
 const ButtonStyle = styled(Button as any)`
-  margin-left: 5%;
 `;
 const FilterTag = styled.div`
   padding: 2px 4px;
   background-color: #FAFAFA;
-  border: 1px solid #1890ff;
-  margin-right: 8px;
+  border: 1px solid #BBBBBB;
+  margin-left: 8px;
+  border-radius: 4px;
 `
 
 const PAGE_SIZE = 10;
@@ -322,14 +339,17 @@ const DataGrid: React.FC<DataGridProps> = (props: DataGridProps) => {
   return (
     <div>
       <SearchSection>
-        <Col lg={22}>
-          <Search
-            placeholder={props.searchPlaceholder || "Search"}
-            onSearch={searched}
-            style={{ width: 320 }}
-          />
+        <Col lg={4}>
+          {props.onCreate ? (
+            <Button
+              type={"primary"}
+              onClick={() => {
+                props.onCreate!()
+              }}
+            >{props.createButtonText || "Add New"}</Button>
+          ) : ""}
         </Col>
-        <IconSection lg={2}>
+        <RightSection lg={20}>
           <div style={{ float: "left" }}>
             <FilterSection
               baseUrl={props.baseUrl}
@@ -337,31 +357,42 @@ const DataGrid: React.FC<DataGridProps> = (props: DataGridProps) => {
               onFilter={dataFiltered} />
           </div>
           <div style={{ float: "left", marginLeft: 7 }}>
-            <ColumnList columns={colList} onColOrderChange={
+            <ColumnList text={props.columnsText} columns={colList} onColOrderChange={
               (reorderedCols: any[]) => { setColList(reorderedCols) }
             } />
           </div>
-          <ButtonStyle
-            icon={<DownloadOutlined />}
-            onClick={() => { }}
-          ></ButtonStyle>
-        </IconSection>
+          <div style={{ float: "left", marginLeft: 7 }}>
+            <ButtonStyle
+              icon={<DownloadOutlined />}
+              onClick={() => { }}>Download</ButtonStyle>
+          </div>
+          <Search
+            placeholder={props.searchPlaceholder || "Search"}
+            onSearch={searched}
+            style={{ width: 320, marginLeft: 7 }}
+          />
+        </RightSection>
       </SearchSection>
-      <RowSection>
-        {filters.map((filter, idx) => (
-          <FilterTag key={idx} onClick={() => { /*TODO: Edit existing filter*/ }}>
-            {getFilterName(filter)}
-            <CloseOutlined style={{ marginLeft: 10, fontSize: 10, marginBottom: 2 }} onClick={() => removeFilter(filter)} />
-          </FilterTag>
-        ))}
-      </RowSection>
-      <MultiselectRow
-        text={props.multiselectText || "{size} item(s) selected."}
-        selectedKeys={selectedRows}
-        onClose={multiselectClosed}
-        actions={props.multiselectActions}
-        closeText={props.multiselectCloseText}
-      />
+      {selectedRows.length > 0 ? (
+        <MultiselectRow
+          text={props.multiselectText || "{size} item(s) selected."}
+          selectedKeys={selectedRows}
+          onClose={multiselectClosed}
+          actions={props.multiselectActions}
+          closeText={props.multiselectCloseText}
+        />
+      ) : (
+        <RowSection>
+          <FilterOutlined style={{ marginTop: 'auto', marginBottom: 'auto' }} />
+          <span style={{ marginTop: 'auto', marginBottom: 'auto', marginLeft: 8 }}>{props.filtersText || "Filters"}:</span>
+          {filters.map((filter, idx) => (
+            <FilterTag key={idx} onClick={() => { /*TODO: Edit existing filter*/ }}>
+              {getFilterName(filter)}
+              <CloseOutlined style={{ marginLeft: 10, fontSize: 10, marginBottom: 2 }} onClick={() => removeFilter(filter)} />
+            </FilterTag>
+          ))}
+        </RowSection>
+      )}
       <Table
         columns={colList}
         dataSource={data}

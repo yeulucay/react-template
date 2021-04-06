@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { FilterOutlined } from "@ant-design/icons";
 import { Space, Button, Popover, Select, InputNumber, DatePicker, Input } from "antd";
-import NumberFormat from 'react-number-format';
 import styled from "styled-components";
-import MoneyInput from "../moneyInput/MoneyInput";
+import MoneyInput from "antd-money";
 import { syncSchema, getOpsObjects } from "./schema";
 
 const Wrapper = styled.div`
@@ -224,7 +223,7 @@ export default function FilterSection(props: FilterSectionsProps) {
       visible={open}
       onVisibleChange={(value: React.SetStateAction<boolean>) => setOpen(value)}
     >
-      <Btn icon={<FilterOutlined />} />
+      <Btn icon={<FilterOutlined />}>Filters</Btn>
     </Popover>
   );
 }

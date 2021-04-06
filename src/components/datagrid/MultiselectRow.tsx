@@ -21,12 +21,21 @@ export interface MultiselectAction {
 }
 
 const RowSection = styled(Row)`
-  padding: 8px 16px;
-  background-color: #e6f7ff !important;
-  border-bottom: #1890ff 3px solid;
+  padding: 8px 0px;
   color: #1890ff;
   min-height: 51px;
 `;
+
+const ItemCountTag = styled.div`
+  padding: 1px 4px;
+  font-size: 12px;
+  height: 20px;
+  background-color: #F0F5FF;
+  border: 1px solid #ADC6FF;
+  color: #2F54EB;
+  border-radius: 4px;
+  margin-top: 6px;
+`
 
 const MultiselectRow: React.FC<MultiselectRowProps> = (props: MultiselectRowProps) => {
 
@@ -35,7 +44,7 @@ const MultiselectRow: React.FC<MultiselectRowProps> = (props: MultiselectRowProp
 			{
 				props.selectedKeys.length > 0 ? (
 					<RowSection style={{ justifyContent: 'space-between' }}>
-						<div style={{ marginTop: 'auto', marginBottom: 'auto' }}>{props.text.replace("{size}", props.selectedKeys.length.toString())}</div>
+						<ItemCountTag>{props.text.replace("{size}", props.selectedKeys.length.toString())}</ItemCountTag>
 						<div >
 							{props.actions ? props.actions.map((a, i) => {
 								return (<Button key={i} type="link" onClick={() => {

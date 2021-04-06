@@ -13,6 +13,7 @@
     "@types/react-dom": "^17.0.1",
     "antd": "^4.14.0",
     "antd-mask-input": "^0.1.15",
+    "antd-money": "^1.0.0",
     "axios": "^0.21.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",

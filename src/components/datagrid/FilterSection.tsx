@@ -57,7 +57,7 @@ export default function FilterSection(props: FilterSectionsProps) {
   useEffect(() => {
     if (props.filterNames) {
       syncSchema(props.filterNames, props.baseUrl).then(filters => {
-        console.log('FILTERS: ', filters);
+        // console.log('FILTERS: ', filters);
         setFilterList(filters);
       })
     }
@@ -142,7 +142,7 @@ export default function FilterSection(props: FilterSectionsProps) {
 
   const handleOpsChange = (value: string) => {
     const so = opsList[value]; // selected ops
-    console.log('SELECTED OPS: ', so);
+    // console.log('SELECTED OPS: ', so);
     setSelectedOps(so);
   }
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { DownloadOutlined, CloseOutlined } from "@ant-design/icons";
+import { DownloadOutlined, CloseOutlined, SlidersFilled } from "@ant-design/icons";
 import { Input, Table, Space, Row, Button, Col, Tag, message, Popover } from "antd";
 import { FilterOutlined } from "@ant-design/icons";
 import styled from "styled-components";
@@ -10,7 +10,9 @@ import ActionList, { CustomAction } from "./ActionList";
 import { MultiselectAction } from "./MultiselectRow";
 import MultiselectRow from "./MultiselectRow";
 import { api } from "./api/api";
+import { getDirectionAbbr } from "./schema";
 import "./datagrid.css";
+import { FormProvider } from "antd/lib/form/context";
 
 interface HttpPayload {
   page: number
@@ -111,6 +113,14 @@ interface DataGridProps {
    * Columns yerine gececek text parametresi
    */
   columnsText?: string
+  /**
+   * Actions sutunu header'i yerine gececek text parametresi
+   */
+  actionText?: string
+  /**
+   * Sort edilmeyecek sutunlar listesi.
+   */
+  excludedSorters?: string[]
 }
 
 const SearchSection = styled(Row)`
@@ -173,11 +183,14 @@ const DataGrid: React.FC<DataGridProps> = (props: DataGridProps) => {
   }, [props.listUrl, props.data]);
 
   useEffect(() => {
-    const cls = [...props.columns];
+    var cls = [...props.columns];
+    cls = cls.map((c) => {
+      return ({ ...c, sorter: c.unsortable ? false : true })
+    })
     if (props.onDelete || props.onEdit || (props.customActions && props.customActions.length > 0)) {
       cls.push(
         {
-          title: "İşlem",
+          title: props.actionText || "Actions",
           width: 70,
           fixed: 'right',
           render: (value: any, record: any) => (
@@ -299,9 +312,19 @@ const DataGrid: React.FC<DataGridProps> = (props: DataGridProps) => {
     setSelectedRows([]);
   }
 
-  const pageChanged = (pagination: any) => {
+  const pageChanged = (pagination: any, _: any, sort: any) => {
+    console.log('SS: ', sort);
     setPagination(pagination)
     const newPayload = { ...payload, page: pagination.current, page_size: pagination.pageSize }
+    if (sort.order) {
+      const objField = sort.field;
+      var sortObj: any = {};
+      const direction = getDirectionAbbr(sort.order);
+      sortObj[objField] = direction;
+      newPayload.sort = sortObj;
+    } else {
+      newPayload.sort = {};
+    }
     setPayload(newPayload);
     getDataList(newPayload);
   }

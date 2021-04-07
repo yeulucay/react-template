@@ -151,3 +151,14 @@ export function getNumericPart(money, decimal = ",") {
 
 	return parseInt(strNum) / Math.pow(10, dl);
 }
+
+const directions = {
+	"ascend": "ASC",
+	"descend": "DESC"
+}
+
+export function getDirectionAbbr(direction) {
+	if (direction) {
+		return directions[direction]
+	}
+}

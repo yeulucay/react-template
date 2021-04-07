@@ -53,6 +53,7 @@ const Dashboard: React.FC = () => {
     {
       title: "Status",
       dataIndex: "status_description",
+      unsortable: true,
       render: (value: any, record: any) => {
         return (
           <StyledTag color={getInvoiceColor(record.campaign_user_status)} key={record.campaign_user_status}>
